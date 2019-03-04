@@ -117,7 +117,7 @@ module.exports = that => {
   return {
     watch: function() {
       chokidar
-        .watch(that.nncSrcDir, {
+        .watch(that.srcDir, {
           ignored: /(^|[\\/\\])\../,
           awaitWriteFinish: {
             stabilityThreshold: 500,

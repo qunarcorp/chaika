@@ -27,7 +27,7 @@ module.exports = {
       }
     ]
   },
-  process: options => {
+  process: (p, options) => {
     let ctx = {
       projectDir: process.cwd(),
       libsDir: path.join(process.cwd(), CONST.LIBS_DIR),
