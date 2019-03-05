@@ -32,7 +32,9 @@ sudo npm install chaika
 
 **注: nnc\_{module}: 对应的模块名占位, 代码会自动匹配替换**
 
-1. getVersionsUrl 保存模块版本号地址(JSON 格式). 用于版本检测和默认安装时安装最新版本.
+**说明**
+
+1. getVersionsUrl 保存模块版本号地址(JSON 格式). 用于版本检测和默认安装时安装最新版本. 例:
 
 ```bash
 [
@@ -80,7 +82,7 @@ sudo npm install chaika
    最终的产物在 nanachi 文件夹下, 可以使用 nanachi 直接转译.
 
    ```bash
-   chaika build
+   cd nanachi && chaika build
    ```
 
    > --watch 实时编辑打包，项目代码 source/ 下有内容改变自动打包。
