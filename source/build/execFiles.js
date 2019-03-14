@@ -100,15 +100,26 @@ module.exports = that => {
       });
     });
 
-    try {
-      let fileName = 'project.config.json';
-      fs.copyFileSync(
-        path.join(cwd, fileName),
-        path.join(cwd, 'nanachi', 'source', fileName)
-      );
-    } catch (err) {
-      //有就copy, 没有就算了
-    }
+    [
+      'quickConfig.json',
+      'project.config.json'
+    ].forEach(function(fileName){
+      try {
+        let dist = fileName === 'quickConfig.json'
+        ?  path.join(cwd, 'nanachi', fileName)
+        :  path.join(cwd, 'nanachi', 'source', fileName);
+
+        fs.ensureFileSync(dist)
+        fs.copyFileSync(
+          path.join(cwd, fileName),
+          dist
+        );
+      } catch (err) {
+        //有就copy, 没有就算了
+      }
+    })
+
+    
 
     merge(that, isMainProject);
   }
