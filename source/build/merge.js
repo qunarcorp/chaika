@@ -168,7 +168,7 @@ const checkAliasConflict = (aliasSpace, type) => {
      *
      */
     Object.keys(aliasSpace).forEach(spaceName => {
-        let alias = aliasSpace[spaceName];
+        let alias = aliasSpace[spaceName] || {};
         Object.keys(alias).forEach(aliasName => {
             aliasDepTree[aliasName] = aliasDepTree[aliasName] || [];
             let aliasValue = alias[aliasName];
