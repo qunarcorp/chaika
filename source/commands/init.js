@@ -45,7 +45,7 @@ module.exports = {
     },
     process: (p, options) => {
         const promps = [];
-        const isQunar = options.qunar;
+        const isQunar = options.camel;
 
         if (isQunar) {
             promps.push({
