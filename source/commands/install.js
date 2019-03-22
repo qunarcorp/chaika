@@ -70,7 +70,7 @@ module.exports = {
             let pkgConfig =
                     require(path.join(projectDir, "package.json")) || {},
                 modules = pkgConfig.modules || {};
-            modules[moduleName] = "^" + version;
+            modules[moduleName] = version;
             pkgConfig.modules = modules;
             fs.writeFileSync(
                 path.join(projectDir, "package.json"),

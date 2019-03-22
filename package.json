@@ -1,30 +1,32 @@
 {
-  "name": "chaika",
-  "version": "0.0.8",
-  "description": "",
-  "bin": {
-    "chaika": "./bin/chaika.js"
-  },
-  "consts": {
-    "getVersionsUrl": "",
-    "moduleGitUrl": "",
-    "packageUrl": ""
-  },
-  "dependencies": {
-    "async": "^2.6.2",
-    "chokidar": "^2.1.2",
-    "colors": "^1.3.3",
-    "commander": "^2.19.0",
-    "figures": "^2.0.0",
-    "fs-extra": "^7.0.1",
-    "json5": "^2.1.0",
-    "moment": "^2.24.0",
-    "request": "^2.34.0",
-    "request-promise": "^4.2.4",
-    "semver": "^5.6.0",
-    "shelljs": "^0.8.3",
-    "targz": "^1.0.1"
-  },
-  "devDependencies": {},
-  "license": "Apache-2.0"
+    "name": "chaika",
+    "version": "1.0.0",
+    "description": "",
+    "bin": {
+        "chaika": "./bin/chaika.js"
+    },
+    "consts": {
+        "getVersionsUrl": "",
+        "moduleGitUrl": "",
+        "packageUrl": ""
+    },
+    "dependencies": {
+        "async": "^2.6.2",
+        "chokidar": "^2.1.2",
+        "colors": "^1.3.3",
+        "commander": "^2.19.0",
+        "crypto": "^1.0.1",
+        "figures": "^2.0.0",
+        "fs-extra": "^7.0.1",
+        "inquirer": "^6.2.2",
+        "json5": "^2.1.0",
+        "moment": "^2.24.0",
+        "request": "^2.34.0",
+        "request-promise": "^4.2.4",
+        "semver": "^5.6.0",
+        "shelljs": "^0.8.3",
+        "targz": "^1.0.1"
+    },
+    "devDependencies": {},
+    "license": "Apache-2.0"
 }
