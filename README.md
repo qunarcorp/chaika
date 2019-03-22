@@ -30,7 +30,7 @@ sudo npm install chaika -g
 
 ## 配置说明
 
-**注: {module}: 对应的模块名占位, 会自动匹配替换**
+**注: {module} 对应的模块名占位, 会自动匹配替换**
 
 1.  getVersionsUrl 保存模块版本号地址(JSON 格式). 用于版本检测和默认安装时安装最新版本.
     示例:
