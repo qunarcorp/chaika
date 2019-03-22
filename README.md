@@ -17,39 +17,54 @@
 安装 chaika
 
 ```bash
-sudo npm install chaika
+sudo npm install chaika -g
 ```
 
-## package.json 配置
+## 初始化 chaika
 
 ```bash
-"consts": {
-    "getVersionsUrl": "http://XXXXXXX/nnc_{module}.json",
-    "moduleGitUrl": "git@XXXXXXX/nnc_{module}.git",
-    "packageUrl": "http://XXXXXXX/"
-},
+   chaika init
 ```
 
-**注: nnc\_{module}: 对应的模块名占位, 代码会自动匹配替换**
+根据提示配置相应参数即可.
 
-**说明**
+**配置说明**
+**注: {module}: 对应的模块名占位, 会自动匹配替换**
 
-1. getVersionsUrl 保存模块版本号地址(JSON 格式). 用于版本检测和默认安装时安装最新版本. 例:
+1.  getVersionsUrl 保存模块版本号地址(JSON 格式). 用于版本检测和默认安装时安装最新版本.
+    示例:
 
-```bash
-[
-    {
-        "version": "0.2.87-rc.127",
-        "desc": "lastest rc",
-        "path": "http://XXXXXXX/0.2.87-rc.127/demo-0.2.87-rc.127.w",
-        "job": "http://XXXXXXX/nnc_module_qunar_demo/127/",
-        "timestamp": 1545370160638
-    }
-]
-```
+    ```bash
+    http://XXXXXXX/{module}.json
+    ```
 
-2. moduleGitUrl 模块的 git 地址. 用于可以更灵活的安装指定分支或 tag 的模块代码.
-3. packageUrl 模块的压缩包地址
+    格式示例:
+
+    ```bash
+    [
+        {
+            "version": "0.2.87-rc.127",
+            "desc": "lastest rc",
+            "path": "http://XXXXXXX/0.2.87-rc.127/demo-0.2.87-rc.127.w",
+            "job": "http://XXXXXXX/nnc_module_qunar_demo/127/",
+            "timestamp": 1545370160638
+        }
+    ]
+    ```
+
+2.  moduleGitUrl 模块的 git 地址. 用于可以更灵活的安装指定分支或 tag 的模块代码.
+    示例:
+
+    ```bash
+    git@XXXXXXX/nnc_{module}.git
+    ```
+
+3.  packageUrl 模块的压缩包地址
+    示例:
+
+    ```bash
+    http://XXXXXXX/
+    ```
 
 # 开发
 
@@ -57,35 +72,35 @@ sudo npm install chaika
 
 1. 首先要将**主模块** clone 到本地
 
-   ```bash
-   git clone git@XXXXXX/nnc_home_qunar.git
-   ```
+    ```bash
+    git clone git@XXXXXX/nnc_home_qunar.git
+    ```
 
 2. 使用 **chaika install [模块名 @ 版本号或分支名]** 依次安装其他模块依赖
 
-   ```bash
-   chaika install qunar_platform@0.0.2-beta.newbranch.10 或
-   chaika install qunar_platform@#newbranch
-   ```
+    ```bash
+    chaika install qunar_platform@0.0.2-beta.newbranch.10 或
+    chaika install qunar_platform@#newbranch
+    ```
 
-   也可以在主模块 package.json 统一配置模块依赖
-   使用 chaika install 一并安装模块
+    也可以在主模块 package.json 统一配置模块依赖
+    使用 chaika install 一并安装模块
 
-   ```bash
-   "modules": {
-   "qunar_travel": "0.0.1-beta.newbranch.1",
-   "qunar_platform": "0.0.2-beta.newbranch.10"
-   }
-   ```
+    ```bash
+    "modules": {
+    "qunar_travel": "0.0.1-beta.newbranch.1",
+    "qunar_platform": "0.0.2-beta.newbranch.10"
+    }
+    ```
 
 3. 最后使用 **chaika build** 命令将所有模块合并.
    最终的产物在 nanachi 文件夹下, 可以使用 nanachi 直接转译.
 
-   ```bash
-   cd nanachi && chaika build
-   ```
+    ```bash
+    cd nanachi && chaika build
+    ```
 
-   > --watch 实时编辑打包，项目代码 source/ 下有内容改变自动打包。
+    > --watch 实时编辑打包，项目代码 source/ 下有内容改变自动打包。
 
 # 命令
 
@@ -99,12 +114,12 @@ chaika install [module_name[@version],module_name[@version],...]
 
 #### module_name[@version]
 
-- module_name：模块名
-- version 支持：
-  - btag，例如：`b-170405-222222-guoxing.ji`
-  - Git 分支，例如：`#release`（`#` 开头）
-  - `'0.0.0'`，下载最新 `btag` 版本
-  - version 省略，下载 `package.json` 里 `modules` 指定的该模块版本。如果 `modules` 没有配置该模块，下载最新版本。
+-   module_name：模块名
+-   version 支持：
+    -   btag，例如：`b-170405-222222-guoxing.ji`
+    -   Git 分支，例如：`#release`（`#` 开头）
+    -   `'0.0.0'`，下载最新 `btag` 版本
+    -   version 省略，下载 `package.json` 里 `modules` 指定的该模块版本。如果 `modules` 没有配置该模块，下载最新版本。
 
 如果直接 `chaika install` 后面不加模块参数，则安装 `package.json` 文件里 `modules` 字段配置的模块及指定版本。例：`modules` 配置
 

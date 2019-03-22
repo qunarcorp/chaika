@@ -72,16 +72,16 @@ module.exports = {
                 }
             });
         } else {
-            promps.push(setPromps("getVersionsUrl", "请输入包版本管理地址"));
+            promps.push(setPromps("getVersionsUrl", "请输入包版本管理地址 getVersionsUrl:"));
 
             promps.push(
                 setPromps(
                     "moduleGitUrl",
-                    "请输入模块 git 地址 (为支持分支下载模块)"
+                    "请输入模块 git 地址 (为支持分支下载模块) moduleGitUrl:"
                 )
             );
 
-            promps.push(setPromps("packageUrl", "请输入模块包地址"));
+            promps.push(setPromps("packageUrl", "请输入模块包地址 packageUrl:"));
         }
 
         inquirer.prompt(promps).then(function(answers) {
