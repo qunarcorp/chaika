@@ -106,10 +106,10 @@ const injectPageRoute = nameSpaceRoutes => {
     let allPageRoutes = Object.keys(nameSpace).map(key => {
         return {
             list: [
-                spaceLine(key, "start"),
+                //spaceLine(key, "start"),
                 ...nameSpace[key]["list"],
-                spaceLine(key, "end"),
-                "\n"
+                //spaceLine(key, "end"),
+                //"\n"
             ],
             order: nameSpace[key]["order"]
         };
@@ -122,10 +122,11 @@ const injectPageRoute = nameSpaceRoutes => {
     allPageRoutes = allPageRoutes.map(item => {
         return item.list;
     });
-
     //扁平化数组, 二维变一维
     allPageRoutes = [].concat(...allPageRoutes);
 
+    allPageRoutes = Array.from(new Set(allPageRoutes));
+    
     allPageRoutes = allPageRoutes.map(importValue => {
         return /\.\/pages\//.test(importValue)
             ? `import '${importValue}';`
