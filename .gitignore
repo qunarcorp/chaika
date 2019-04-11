@@ -1,6 +1,8 @@
 ﻿# kdiff3 ignore
 *.orig
 
+/node_modules
+
 # maven ignore
 target/
 
