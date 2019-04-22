@@ -114,6 +114,9 @@ const getConfigFromProject = () => {
         // }
         nameSpacePlatConfig[ moduleName ] = {};
         platConfigFile.forEach((fileName)=>{
+            if (/\/source$/.test(moduleDir)) {
+                moduleDir = path.resolve(moduleDir, '..');
+            }
             let configFilePath = path.join(moduleDir, fileName);
             let key = fileName.replace('.', '_');
             let platConfigJson = {};
