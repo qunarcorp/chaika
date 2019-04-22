@@ -1,5 +1,6 @@
 let fs = require("fs-extra");
 let path = require("path");
+const lodashMerge = require('lodash.merge');
 const { fail, success } = require("../utils").outLog;
 const { DEST_DIR } = require("../chaika_config");
 let glob = require("glob");
@@ -26,9 +27,20 @@ let spaceLine = (key, text) => {
 
 //获取业务中各配置
 const getConfigFromProject = () => {
+
+    let platConfigFile =  [
+        'wxConfig.json', 
+        'aliConfig.json', 
+        'buConfig.json', 
+        'ttCofnig.json', 
+        'qqConfig.json', 
+        'quickConfig.json'
+    ];
+
     let nameSpaceRoutes = {};
     let nameSpaceAlias = {};
     let nameSpaceProjectPkg = {};
+    let nameSpacePlatConfig = {};
 
     let moduleNamePattern = path.join(
         cwd,
@@ -38,6 +50,7 @@ const getConfigFromProject = () => {
     );
     let moduleDirs = glob.sync(moduleNamePattern);
 
+    //如果当前不是 home 包，home包资源就在 .chaika_cache/chaika 根目录下
     if (!isMain) {
         moduleDirs.push(path.join(cwd, ".chaika_cache", "chaika"));
     }
@@ -46,6 +59,7 @@ const getConfigFromProject = () => {
         ? moduleDirs.push(path.join(cwd, "source"))
         : moduleDirs.push(path.join(cwd));
 
+    
     moduleDirs.forEach(moduleDir => {
         let pkg = {};
         let pkgJsonPath = "";
@@ -64,7 +78,10 @@ const getConfigFromProject = () => {
             //项目无package.json依赖
         }
 
-        appJsonData = require(path.join(moduleDir, "app.json"));
+
+
+        appJsonData = require(path.join(moduleDir, "app.json"))
+       
         let order = appJsonData.order || 0;
 
         let routes = appJsonData["pages"].map(pagePath => {
@@ -72,21 +89,49 @@ const getConfigFromProject = () => {
             pagePath = reg.test(pagePath) ? pagePath : "./" + pagePath;
             return pagePath;
         });
-
+      
         moduleName = pkg["module"] || pkg["name"];
+
+        if (!moduleName) return;
+
         nameSpaceRoutes[moduleName] = {
             list: Array.from(new Set(routes)),
             order: order
         };
+        
+        //各业务线运行依赖配置
         nameSpaceProjectPkg[moduleName] = pkg.dependencies;
 
+        //各业务线别名配置
         nameSpaceAlias[moduleName] = appJsonData.alias;
+
+        // 各业务线 config 配置。
+        // {
+        //     hotel: {
+        //         quickConfig_json: {
+        //         }
+        //     }
+        // }
+        nameSpacePlatConfig[ moduleName ] = {};
+        platConfigFile.forEach((fileName)=>{
+            let configFilePath = path.join(moduleDir, fileName);
+            let key = fileName.replace('.', '_');
+            let platConfigJson = {};
+            try {
+                platConfigJson = require(configFilePath);
+                nameSpacePlatConfig[moduleName][key] = platConfigJson;
+            } catch (err) {
+
+            }
+        })
+
     });
 
     return {
         nameSpaceRoutes,
         nameSpaceAlias,
-        nameSpaceProjectPkg
+        nameSpaceProjectPkg,
+        nameSpacePlatConfig
     };
 };
 
@@ -248,13 +293,16 @@ let mergePkg = (nameSpaceAlias, nameSpaceProjectPkg) => {
         nameSpaceProjectPkg
     );
 
-    //** dep 冲突测试;
-    //dependenciesSpaceMap['nnc_qunar_platform']['cookie2'] = '^0.3.6';
-    //dependenciesSpaceMap[moduleName]['cookie2'] = 'xxx';
+    // //** dep 冲突测试;
+    // dependenciesSpaceMap.nnc_qunar_platform = {}
+    // dependenciesSpaceMap.nnc_qunar_platform.cookie2 = '^0.3.6';
+    // dependenciesSpaceMap[moduleName].cookie2 = '0.2.6';
+    
 
     //** alias 冲突测试;
-    //aliasSpaceMap['nnc_qunar_platform']['@common'] = '/source/x1';
-    //aliasSpaceMap[moduleName]['@common'] = '/source/x2';
+    // aliasSpaceMap.nnc_qunar_platform = {};
+    // aliasSpaceMap.nnc_qunar_platform['@common'] = '/source/x1';
+    // aliasSpaceMap[moduleName]['@common'] = '/source/x2';
 
     //校验alias冲突
     checkAliasConflict(aliasSpaceMap, "alias");
@@ -285,14 +333,56 @@ let mergePkg = (nameSpaceAlias, nameSpaceProjectPkg) => {
     });
 };
 
+let mergeConfig = (mergeConfig)=> {
+
+   
+    let ret = {
+        'wxConfig_json': {},
+        'aliConfig_json': {},
+        'buConfig_json': {},
+        'ttConfig_json': {},
+        'qqConfig_json': {},
+        'quickConfig_json': {}
+    };
+
+   
+    Object.keys(mergeConfig).forEach((key)=>{
+        for(let i in mergeConfig[key]) {
+            lodashMerge(ret[i], mergeConfig[key][i]);
+        }
+    });
+
+    for( let i in ret) {
+        if ( Object.keys(ret[i]).length ) {
+            let dist = path.join(cwd, 'nanachi', i.replace('_', '.'));
+            fs.writeFile(
+                path.join(cwd, 'nanachi', i.replace('_', '.')),
+                JSON.stringify(ret[i], null, 4),
+                (err)=>{
+                    if (err) {
+                        console.log(err);
+                        process.exit(1);
+                    }
+                    success("Merge " + path.relative(cwd, dist) + " Success!");
+                }
+            )
+        }
+    }
+
+}
+
 module.exports = (context, isMainProject) => {
     isMain = isMainProject;
     let {
         nameSpaceRoutes,
         nameSpaceAlias,
-        nameSpaceProjectPkg
+        nameSpaceProjectPkg,
+        nameSpacePlatConfig
     } = getConfigFromProject();
 
     injectPageRoute(nameSpaceRoutes, context);
+
     mergePkg(nameSpaceAlias, nameSpaceProjectPkg, context);
+
+    mergeConfig(nameSpacePlatConfig);
 };
