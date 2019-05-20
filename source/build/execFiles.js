@@ -131,7 +131,6 @@ module.exports = that => {
                 .on('all', (event, changedPath) => {
                     if (!isReady) return;
                     const dist = getDistPath(changedPath);
-                    console.log('event>>>>>>>>>>', event);
                     switch (event) {
                         case 'change':
                             const special = ['package.json', 'app.js', 'app.json'];
