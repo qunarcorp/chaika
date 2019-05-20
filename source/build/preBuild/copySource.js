@@ -18,7 +18,26 @@ module.exports = ctx => {
     if (!fs.existsSync(distDir)) {
       util.newFolder(distDir);
     }
+    
     shelljs.cp('-R', ctx.srcDir + '/*', distDir);
+    
+    try {
+      let pkgSrc =  path.join( ctx.srcDir,  '../package.json');
+      let pkgDist = path.join( distDir, 'package.json' );
+
+      let exists  = fs.existsSync(pkgSrc);
+      
+      if (exists) {
+        fs.copyFileSync(
+          pkgSrc,
+          pkgDist
+        )
+      }
+     
+    } catch (err) {
+      console.log(err);
+    }
+
     util.outLog.success('Copy Source Success!');
   }
 };
