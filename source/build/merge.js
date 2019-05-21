@@ -371,7 +371,7 @@ let mergeConfig = (mergeConfig)=> {
         if ( Object.keys(ret[i]).length ) {
             let dist = path.join(cwd, 'nanachi', i.replace('_', '.'));
             fs.writeFile(
-                path.join(cwd, 'nanachi', i.replace('_', '.')),
+                path.join(cwd, 'nanachi', 'source',  i.replace('_', '.')),
                 JSON.stringify(ret[i], null, 4),
                 (err)=>{
                     if (err) {
