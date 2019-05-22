@@ -90,6 +90,7 @@ const getConfigFromProject = () => {
             return pagePath;
         });
       
+        
         moduleName = pkg["module"] || pkg["name"];
 
         if (!moduleName) return;
@@ -176,10 +177,13 @@ const injectPageRoute = nameSpaceRoutes => {
     allPageRoutes = Array.from(new Set(allPageRoutes));
     
     allPageRoutes = allPageRoutes.map(importValue => {
-        return /\.\/pages\//.test(importValue)
+       
+        return /\.\/pages\//.test(importValue) || /\/pages\//.test(importValue)
             ? `import '${importValue}';`
             : importValue;
     });
+
+    
     code = allPageRoutes.join("\n") + "\n" + code;
     let appJsDist = path.join(cwd, DEST_DIR, "app.js");
 
