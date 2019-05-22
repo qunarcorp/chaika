@@ -85,8 +85,20 @@ const getConfigFromProject = () => {
         let order = appJsonData.order || 0;
 
         let routes = appJsonData["pages"].map(pagePath => {
-            let reg = /^\.\/pages\//; //是否以 ./pages开头
-            pagePath = reg.test(pagePath) ? pagePath : "./" + pagePath;
+            const addPrefix = str => /^\.\/pages\//.test(str) ? str : `./${str}`;
+            if("[object Object]" === Object.prototype.toString.call(pagePath)){
+                /**
+                 * 如果配置项为object，并且platform字段有数据，插入差异化注释
+                 * 如：if process.env.ANU_ENV == 'wx';
+                 * nanachi 会根据注释的内容判断平台的差异进行编译
+                 */
+                const comment = `// if process.env.ANU_ENV == '${pagePath.platform}';\n`
+                const route = addPrefix(pagePath.route);
+                // 如果没有platform字段或者为空字符串直接返回 route
+                return  pagePath.platform ? `${comment}import '${route}'` : route;
+            }
+            //是否以 ./pages开头
+            pagePath = addPrefix(pagePath);
             return pagePath;
         });
       
@@ -177,7 +189,6 @@ const injectPageRoute = nameSpaceRoutes => {
     allPageRoutes = Array.from(new Set(allPageRoutes));
     
     allPageRoutes = allPageRoutes.map(importValue => {
-       
         return /\.\/pages\//.test(importValue) || /\/pages\//.test(importValue)
             ? `import '${importValue}';`
             : importValue;
