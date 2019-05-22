@@ -80,7 +80,7 @@ const getConfigFromProject = () => {
 
 
 
-        appJsonData = require(path.join(moduleDir, "app.json"))
+        appJsonData = JSON.parse(fs.readFileSync(path.join(moduleDir, 'app.json')));
        
         let order = appJsonData.order || 0;
 
