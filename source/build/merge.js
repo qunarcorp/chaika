@@ -85,21 +85,27 @@ const getConfigFromProject = () => {
         let order = appJsonData.order || 0;
 
         let routes = appJsonData["pages"].map(pagePath => {
-            const addPrefix = str => /^\.\/pages\//.test(str) ? str : `./${str}`;
-            if("[object Object]" === Object.prototype.toString.call(pagePath)){
+            const addPrefix = str => (/^\.\/pages\//.test(str) ? str : `./${str}`);
+            if ('[object Object]' === Object.prototype.toString.call(pagePath)) {
                 /**
                  * 如果配置项为object，并且platform字段有数据，插入差异化注释
-                 * 如：if process.env.ANU_ENV == 'wx';
+                 * 如：if process.env.ANU_ENV == 'wx,ali';
                  * nanachi 会根据注释的内容判断平台的差异进行编译
                  */
-                const comment = `// if process.env.ANU_ENV == '${pagePath.platform}';\n`
-                const route = addPrefix(pagePath.route);
+                let route = `import '${addPrefix(pagePath.route)}';`;
+                if (pagePath.platform) {
+                    // nanachi 识别竖线分隔 join('|')
+                    const plat = pagePath.platform
+                        .split(',')
+                        .map(item => item.trim())
+                        .join('|');
+                    const comment = `// if process.env.ANU_ENV == '${plat}';\n`;
+                    route = comment + route;
+                }
                 // 如果没有platform字段或者为空字符串直接返回 route
-                return  pagePath.platform ? `${comment}import '${route}'` : route;
+                return route;
             }
-            //是否以 ./pages开头
-            pagePath = addPrefix(pagePath);
-            return pagePath;
+            return `import '${addPrefix(pagePath)}';`;
         });
       
         
@@ -187,13 +193,6 @@ const injectPageRoute = nameSpaceRoutes => {
     allPageRoutes = [].concat(...allPageRoutes);
 
     allPageRoutes = Array.from(new Set(allPageRoutes));
-    
-    allPageRoutes = allPageRoutes.map(importValue => {
-        return /\.\/pages\//.test(importValue) || /\/pages\//.test(importValue)
-            ? `import '${importValue}';`
-            : importValue;
-    });
-
     
     code = allPageRoutes.join("\n") + "\n" + code;
     let appJsDist = path.join(cwd, DEST_DIR, "app.js");
