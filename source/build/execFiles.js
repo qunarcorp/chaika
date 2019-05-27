@@ -11,7 +11,7 @@ const shell = require('shelljs');
 const cwd = process.cwd();
 
 const copy = (src, dist, isFile) => {
-    if (/\w+Config\.json/.test(dist)) {
+    if (/\w+Config\.json$/.test(dist)) {
         return;
     }
     isFile ? fs.ensureFileSync(dist) : fs.ensureDirSync(dist);
