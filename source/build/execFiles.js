@@ -11,11 +11,12 @@ const shell = require('shelljs');
 const cwd = process.cwd();
 
 const copy = (src, dist, isFile) => {
+    if (/\w+Config\.json$/.test(dist)) {
+        return;
+    }
     isFile ? fs.ensureFileSync(dist) : fs.ensureDirSync(dist);
-
     let promise = isFile ? fs.copyFile(src, dist) : fs.copy(src, dist);
     let logFilePathText = path.relative(cwd, dist);
-
     promise
         .then(() => {
             success(`Copy to ${logFilePathText} Success!`);
@@ -79,6 +80,8 @@ module.exports = that => {
                         if (isIgnore(id)) return;
                         if (!checkIsFile(id)) return;
                         let dist = path.join(distDir, path.relative(src, id));
+                        
+                        
                         copy(id, dist, true);
                     });
                 });
