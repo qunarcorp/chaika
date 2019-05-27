@@ -378,10 +378,8 @@ let mergeConfig = (mergeConfig)=> {
     for( let i in ret) {
         if ( Object.keys(ret[i]).length ) {
             let dist = path.join(cwd, 'nanachi', 'source', i.replace('_', '.'));
-            
             fs.writeFile(
-                path.join(cwd, 'nanachi', 'source',  i.replace('_', '.')),
-                
+                dist,
                 JSON.stringify(ret[i], null, 4),
                 (err)=>{
                     if (err) {
@@ -406,8 +404,6 @@ module.exports = (context, isMainProject) => {
     } = getConfigFromProject();
 
     injectPageRoute(nameSpaceRoutes, context);
-
     mergePkg(nameSpaceAlias, nameSpaceProjectPkg, context);
-
     mergeConfig(nameSpacePlatConfig);
 };

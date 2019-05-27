@@ -98,7 +98,7 @@ module.exports = that => {
             });
         });
 
-        ['quickConfig.json', 'project.config.json'].forEach(function(fileName) {
+        ['project.config.json'].forEach(function(fileName) {
             try {
                 let dist =
                     fileName === 'quickConfig.json'
