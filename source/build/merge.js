@@ -1,6 +1,6 @@
 let fs = require("fs-extra");
 let path = require("path");
-const lodashMerge = require('lodash.merge');
+const lodashMerge = require('lodash.mergewith');
 const { fail, success } = require("../utils").outLog;
 const { DEST_DIR } = require("../chaika_config");
 let glob = require("glob");
@@ -24,6 +24,12 @@ let isMain;
 let spaceLine = (key, text) => {
     return `//===================== ${key} ${text} =====================`;
 };
+
+function customizer(objValue, srcValue) {
+    if ( Array.isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+}
 
 //获取业务中各配置
 const getConfigFromProject = () => {
@@ -362,18 +368,20 @@ let mergeConfig = (mergeConfig)=> {
         'quickConfig_json': {}
     };
 
-   
     Object.keys(mergeConfig).forEach((key)=>{
         for(let i in mergeConfig[key]) {
-            lodashMerge(ret[i], mergeConfig[key][i]);
+            let res = lodashMerge(ret[i], mergeConfig[key][i], customizer);
+            ret[i] = res;
         }
     });
 
     for( let i in ret) {
         if ( Object.keys(ret[i]).length ) {
-            let dist = path.join(cwd, 'nanachi', i.replace('_', '.'));
+            let dist = path.join(cwd, 'nanachi', 'source', i.replace('_', '.'));
+            
             fs.writeFile(
                 path.join(cwd, 'nanachi', 'source',  i.replace('_', '.')),
+                
                 JSON.stringify(ret[i], null, 4),
                 (err)=>{
                     if (err) {

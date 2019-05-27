@@ -21,6 +21,7 @@
         "inquirer": "^6.2.2",
         "json5": "^2.1.0",
         "lodash.merge": "^4.6.1",
+        "lodash.mergewith": "^4.6.1",
         "moment": "^2.24.0",
         "request": "^2.34.0",
         "request-promise": "^4.2.4",
