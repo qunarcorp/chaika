@@ -55,15 +55,16 @@ const getConfigFromProject = () => {
         "qunar_*"
     );
     let moduleDirs = glob.sync(moduleNamePattern);
+    
 
     //如果当前不是 home 包，home包资源就在 .chaika_cache/chaika 根目录下
     if (!isMain) {
         moduleDirs.push(path.join(cwd, ".chaika_cache", "chaika"));
     }
 
-    fs.existsSync(path.join(cwd, "source"))
-        ? moduleDirs.push(path.join(cwd, "source"))
-        : moduleDirs.push(path.join(cwd));
+    // fs.existsSync(path.join(cwd, "source"))
+    //     ? moduleDirs.push(path.join(cwd, "source"))
+    //     : moduleDirs.push(path.join(cwd));
 
     
     moduleDirs.forEach(moduleDir => {
@@ -137,14 +138,25 @@ const getConfigFromProject = () => {
         //         }
         //     }
         // }
+        
         nameSpacePlatConfig[ moduleName ] = {};
+        const pathErr = [];
         platConfigFile.forEach((fileName)=>{
             if (/\/source$/.test(moduleDir)) {
                 moduleDir = path.resolve(moduleDir, '..');
             }
+           
+            //各业务线的配置在.chaika_cache/chaika 中的路径
             let configFilePath = path.join(moduleDir, fileName);
+           
+            if ( !fs.existsSync(configFilePath) ) {
+                return;
+            }
+
+            //moduleName: qunar_platform, qunar_train, home_qunar, ...
             let key = fileName.replace('.', '_');
             let platConfigJson = {};
+            
             try {
                 platConfigJson = require(configFilePath);
                 nameSpacePlatConfig[moduleName][key] = platConfigJson;
