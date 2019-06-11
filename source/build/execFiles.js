@@ -35,7 +35,7 @@ const checkIsFile = fPath => {
 
 const isIgnore = fPath => {
     let filename = path.basename(fPath);
-    if (/^\./.test(filename) || ['package.json', 'app.js', 'app.json'].includes(filename)) {
+    if (/^\./.test(filename) || ['package.json', 'README.md', 'app.js', 'app.json'].includes(filename)) {
         return true;
     }
 };
@@ -89,14 +89,14 @@ module.exports = that => {
         });
 
         //copy source目录资源
-        glob(`${path.join(cwd, 'source')}/**`, {}, (err, files) => {
-            files.forEach(id => {
-                if (isIgnore(id)) return;
-                if (!checkIsFile(id)) return;
-                let dist = path.join(distDir, path.relative(path.join(cwd, 'source'), id));
-                copy(id, dist, true);
-            });
-        });
+        // glob(`${path.join(cwd, 'source')}/**`, {}, (err, files) => {
+        //     files.forEach(id => {
+        //         if (isIgnore(id)) return;
+        //         if (!checkIsFile(id)) return;
+        //         let dist = path.join(distDir, path.relative(path.join(cwd, 'source'), id));
+        //         copy(id, dist, true);
+        //     });
+        // });
 
         ['project.config.json'].forEach(function(fileName) {
             try {
