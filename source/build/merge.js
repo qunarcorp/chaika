@@ -62,11 +62,11 @@ const getConfigFromProject = () => {
         moduleDirs.push(path.join(cwd, ".chaika_cache", "chaika"));
     }
 
-    // fs.existsSync(path.join(cwd, "source"))
-    //     ? moduleDirs.push(path.join(cwd, "source"))
-    //     : moduleDirs.push(path.join(cwd));
+   
+    fs.existsSync(path.join(cwd, "source"))
+        ? moduleDirs.push(path.join(cwd, "source"))
+        : moduleDirs.push(path.join(cwd));
 
-    
     moduleDirs.forEach(moduleDir => {
         let pkg = {};
         let pkgJsonPath = "";
@@ -84,8 +84,6 @@ const getConfigFromProject = () => {
         } catch (err) {
             //项目无package.json依赖
         }
-
-
 
         appJsonData = JSON.parse(fs.readFileSync(path.join(moduleDir, 'app.json')));
        
@@ -129,8 +127,9 @@ const getConfigFromProject = () => {
         nameSpaceProjectPkg[moduleName] = pkg.dependencies;
 
         //各业务线别名配置
+        
         nameSpaceAlias[moduleName] = appJsonData.alias;
-
+       
         // 各业务线 config 配置。
         // {
         //     hotel: {
@@ -344,6 +343,8 @@ let mergePkg = (nameSpaceAlias, nameSpaceProjectPkg) => {
 
     //校验package.json中dependencies冲突（某种意义上说, dependencies也是属于alias别名配置）
     checkAliasConflict(dependenciesSpaceMap, "npm");
+
+    
 
     mainPkg["nanachi"]["alias"] = merge(aliasSpaceMap);
     mainPkg["dependencies"] = merge(dependenciesSpaceMap);
