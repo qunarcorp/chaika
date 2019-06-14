@@ -60,12 +60,14 @@ const getConfigFromProject = () => {
     //如果当前不是 home 包，home包资源就在 .chaika_cache/chaika 根目录下
     if (!isMain) {
         moduleDirs.push(path.join(cwd, ".chaika_cache", "chaika"));
+    } else {
+        moduleDirs.push(path.join(cwd));
     }
 
    
-    fs.existsSync(path.join(cwd, "source"))
-        ? moduleDirs.push(path.join(cwd, "source"))
-        : moduleDirs.push(path.join(cwd));
+    // fs.existsSync(path.join(cwd, "source"))
+    //     ? moduleDirs.push(path.join(cwd, "source"))
+    //     : moduleDirs.push(path.join(cwd));
 
     moduleDirs.forEach(moduleDir => {
         let pkg = {};
@@ -158,7 +160,8 @@ const getConfigFromProject = () => {
             
             try {
                 platConfigJson = require(configFilePath);
-                nameSpacePlatConfig[moduleName][key] = platConfigJson;
+                nameSpacePlatConfig[moduleName][key] = lodashMerge(nameSpacePlatConfig[moduleName][key], platConfigJson, customizer);
+                //nameSpacePlatConfig[moduleName][key] = Object.assign( nameSpacePlatConfig[moduleName][key] || {}, platConfigJson) ;
             } catch (err) {
 
             }
@@ -371,7 +374,6 @@ let mergePkg = (nameSpaceAlias, nameSpaceProjectPkg) => {
 
 let mergeConfig = (mergeConfig)=> {
 
-   
     let ret = {
         'wxConfig_json': {},
         'aliConfig_json': {},
@@ -387,6 +389,8 @@ let mergeConfig = (mergeConfig)=> {
             ret[i] = res;
         }
     });
+
+   
 
     for( let i in ret) {
         if ( Object.keys(ret[i]).length ) {
