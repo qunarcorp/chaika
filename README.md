@@ -130,7 +130,7 @@ Options:
 chaika install [module_name[@version],module_name[@version],...]
 ```
 2. 批量安装:
-可以根据业务情况对不同平台小程序做单独配置, 可以在 package.json 中设置 [platform]_modules 进行对应批量安装. 例:
+可以根据业务情况对不同平台小程序做单独配置, 可以在业务主模块的 package.json 中设置 [platform]_modules 进行对应批量安装. 例:
 ```
 "modules": {
     "qunar_common": "1.0.0"
