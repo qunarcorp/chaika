@@ -43,8 +43,8 @@ fs.readdirSync(path.join(__dirname, '../source/commands')).forEach(file => {
           });
         }
       })
-      .action(function(options) {
-        command.process(process.cwd(), options);
+      .action(function(argv, options) {
+        command.process(process.cwd(), argv, options);
       });
   }
 });
