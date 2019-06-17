@@ -112,9 +112,40 @@ sudo npm install chaika -g
 
 安装依赖的项目模块
 
+```
+chaika install --help
+```
+
+```
+Usage: install [options]
+
+Options:
+
+-p, --platform [type]   根据平台批量安装对应的业务模块
+-h, --help              output usage information
+```
+安装方式:
+1. 可以单独安装模块: 
 ```bash
 chaika install [module_name[@version],module_name[@version],...]
 ```
+2. 批量安装:
+可以根据业务情况对不同平台小程序做单独配置, 可以在 package.json 中设置 [platform]_modules 进行对应批量安装. 例:
+```
+"modules": {
+    "qunar_common": "1.0.0"
+},
+"wx_modules": {
+    "qunar_bus": "2.0.0",
+    "qunar_hotel": "2.0.0"
+},
+"ali_modules": {
+    "qunar_bus": "1.0.0"
+}
+...
+```
+
+
 
 #### module_name[@version]
 
