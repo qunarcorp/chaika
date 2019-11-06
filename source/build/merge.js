@@ -47,6 +47,7 @@ const getConfigFromProject = () => {
     let nameSpaceAlias = {};
     let nameSpaceProjectPkg = {};
     let nameSpacePlatConfig = {};
+    let nameSpaceImportSyntax = {};
 
     let moduleNamePattern = path.join(
         cwd,
@@ -114,6 +115,10 @@ const getConfigFromProject = () => {
             }
             return `import '${addPrefix(pagePath)}';`;
         });
+
+       
+
+       
       
         
         moduleName = pkg["module"] || pkg["name"];
@@ -131,6 +136,8 @@ const getConfigFromProject = () => {
         //各业务线别名配置
         
         nameSpaceAlias[moduleName] = appJsonData.alias;
+
+        nameSpaceImportSyntax[moduleName] =  appJsonData.imports || [];
        
         // 各业务线 config 配置。
         // {
@@ -173,12 +180,13 @@ const getConfigFromProject = () => {
         nameSpaceRoutes,
         nameSpaceAlias,
         nameSpaceProjectPkg,
-        nameSpacePlatConfig
+        nameSpacePlatConfig,
+        nameSpaceImportSyntax
     };
 };
 
 //业务线page route配置插入到app.js
-const injectPageRoute = nameSpaceRoutes => {
+const injectPageRoute = (nameSpaceRoutes, nameSpaceImportSyntax) => {
     //获取业务page路由 和 alias配置
     let nameSpace = nameSpaceRoutes;
 
@@ -214,7 +222,23 @@ const injectPageRoute = nameSpaceRoutes => {
 
     allPageRoutes = Array.from(new Set(allPageRoutes));
     
-    code = allPageRoutes.join("\n") + "\n" + code;
+    let allAppImportSyntaxCode = Object.keys(nameSpaceImportSyntax).reduce((ret, el) => {
+        ret = ret.concat(nameSpaceImportSyntax[el]);
+        return ret.map((curEl) => {
+            curEl = curEl.trim();
+            if (!/;$/.test(curEl)) {
+                curEl = curEl + ';';
+            }
+            return curEl;
+        });
+    }, []).join("\n");
+
+    console.log(
+        allAppImportSyntaxCode
+    );
+
+    
+    code = allPageRoutes.join("\n") + "\n"+ allAppImportSyntaxCode + "\n" + code;
     let appJsDist = path.join(cwd, DEST_DIR, "app.js");
 
     needUpdate(appJsDist, code, () => {
@@ -232,6 +256,8 @@ const injectPageRoute = nameSpaceRoutes => {
         });
     });
 };
+
+
 
 //校验冲突: alias和npm
 const checkAliasConflict = (aliasSpace, type) => {
@@ -417,10 +443,10 @@ module.exports = (context, isMainProject) => {
         nameSpaceRoutes,
         nameSpaceAlias,
         nameSpaceProjectPkg,
-        nameSpacePlatConfig
+        nameSpacePlatConfig,
+        nameSpaceImportSyntax
     } = getConfigFromProject();
-
-    injectPageRoute(nameSpaceRoutes, context);
+    injectPageRoute(nameSpaceRoutes, nameSpaceImportSyntax, context);
     mergePkg(nameSpaceAlias, nameSpaceProjectPkg, context);
     mergeConfig(nameSpacePlatConfig);
 };
